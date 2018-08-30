@@ -1,5 +1,8 @@
+.idea/*
+
 zk-single-kafka-single/*
 zk-single-kafka-multiple/*
 zk-multiple-kafka-single/*
 zk-multiple-kafka-multiple/*
 full-stack/*
+es-full-stack/*

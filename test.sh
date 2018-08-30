@@ -34,17 +34,37 @@ all_great(){
 
 kafka_tests(){
     echo "Testing Kafka"
-    topic="testtopic"
+    topic="test-kafka-docker"
+    topic_exists=`kafka-topics --list --topic $topic --zookeeper zoo1:2181`
+    if [ x$topic_exists != x ]; then kafka-topics --delete --topic $topic --zookeeper zoo1:2181; fi
     if grep -q kafka3 $1; then replication_factor="3"; else replication_factor="1"; fi
-    for i in 1 2 3 4 5; do echo "trying to create test topic" && kafka-topics --create --topic $topic --replication-factor $replication_factor --partitions 12 --zookeeper localhost:2181 && break || sleep 5; done
-    for x in {1..100}; do echo $x; done | kafka-console-producer --broker-list localhost:9092 --topic $topic
-    rows=`kafka-console-consumer --bootstrap-server localhost:9092 --topic $topic --from-beginning --timeout-ms 2000 | wc -l`
-    # rows=`kafkacat -C -b localhost:9092 -t $topic -o beginning -e | wc -l `
+    for i in {1..5}; do echo "trying to create test topic" && kafka-topics --create --topic $topic --replication-factor $replication_factor --partitions 12 --zookeeper zoo1:2181 && break || sleep 5; done
+    for x in {1..100}; do echo $x; done | kafka-console-producer --broker-list kafka1:9092 --topic $topic
+    rows=`kafka-console-consumer --bootstrap-server kafka1:9092 --topic $topic --from-beginning --timeout-ms 2000 | wc -l`
+    # rows=`kafkacat -C -b kafka1:9092 -t $topic -o beginning -e | wc -l `
     if [ "$rows" != "100" ]; then
-        kafka-console-consumer --bootstrap-server localhost:9092 --topic test-topic --from-beginning --timeout-ms 2000 | wc -l
+        kafka-console-consumer --bootstrap-server kafka1:9092 --topic test-topic --from-beginning --timeout-ms 2000 | wc -l
         exit 1
     else
         echo "Kafka Test Success"
+    fi
+}
+
+kafka_connect_es_test(){
+    echo "Testing Kafka Connect Elasticsearch Sink"
+    topic="test-elasticsearch-sink"
+    topic_exists=`kafka-topics --list --topic $topic --zookeeper zoo1:2181`
+    if [ x$topic_exists != x ]; then kafka-topics --delete --topic $topic --zookeeper zoo1:2181; fi
+    if grep -q kafka3 $1; then replication_factor="3"; else replication_factor="1"; fi
+    for i in {1..5}; do echo "trying to create test topic" && kafka-topics --create --topic $topic --replication-factor $replication_factor --partitions 12 --zookeeper zoo1:2181 && break || sleep 5; done
+    for i in {1..5}; do echo "trying to create kafka-connect elasticsearch connector" && cat ./config/kafka-connect/elasticsearch-sink.json | curl -s -XPOST -H "Content-Type: application/json" --data @- "http://kafka-connect:8083/connectors" && break || sleep 10; done
+    for x in {1..100}; do echo "{\"f1\": \"value$x\", \"f2\": $x}"; done | kafka-avro-console-producer --broker-list kafka1:9092 --topic $topic \
+        --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"f1","type":"string"}, {"name":"f2","type":"int"}]}'
+    rows=$(curl -s -XGET 'http://elasticsearch:9200/test-elasticsearch-sink/_count' | python -c "import sys, json; print json.load(sys.stdin)['count']")
+    if [ "$rows" != "100" ]; then
+        echo "Test failed"
+    else
+        echo "Kafka + Elasticsearch Test Success"
     fi
 }
 
@@ -56,6 +76,7 @@ docker-compose -f $file ps
 # tests
 all_great $1 $2
 kafka_tests $1
+kafka_connect_es_test $1
 all_great $1 $2
 # teardown
 docker-compose -f $file down

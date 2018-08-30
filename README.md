@@ -38,6 +38,10 @@ If you are using Docker for Mac >= 1.12, Docker for Linux, or Docker for Windows
 127.0.0.1     kafka-connect-ui
 127.0.0.1     zoonavigator-web
 127.0.0.1     zoonavigator-api
+127.0.0.1     elasticsearch
+127.0.0.1     kibana
+127.0.0.1     logstash
+127.0.0.1     grafana
 ```
 
 If you are using Docker for Mac <= 1.11, or Docker Toolbox for Windows
@@ -57,6 +61,9 @@ Please add the following lines to `/etc/hosts` or `C:\Windows\System32\Drivers\e
 192.168.99.100    kafka-connect-ui
 192.168.99.100    zoonavigator-web
 192.168.99.100    zoonavigator-api
+192.168.99.100    kibana
+192.168.99.100    logstash
+192.168.99.100    grafana
 ```
 
 ## Single Zookeeper / Single Kafka
@@ -133,6 +140,14 @@ docker-compose -f zk-multiple-kafka-multiple.yml down
  docker-compose -f full-stack.yml up
  docker-compose -f full-stack.yml down
  ```
+
+## Full stack with Elasticsearch
+ Uses same components as Full stack and improve Elastic Search
+ - Elasticsearch
+ - Logstash
+ - Kibana
+ - Grafana
+
 
 # FAQ
 

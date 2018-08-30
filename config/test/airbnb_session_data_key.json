@@ -1,0 +1,7 @@
+{
+    "type": "record", 
+    "name": "airbnb_session_key", 
+    "fields": [
+        {"name": "id_session", "type": ["string", "null"], "default": "null"}
+    ]
+}

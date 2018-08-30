@@ -1,0 +1,27 @@
+{
+    "type": "record",
+    "name": "airbnb_session_value",
+    "fields": [
+        {"name": "id_visitor",                  "type": "string"},
+        {"name": "id_session",                  "type": ["string", "null"], "default": "null"},
+        {"name": "dim_session_number",          "type": ["int","null"],     "default": "null"},
+        {"name": "dim_user_agent",              "type": ["string", "null"], "default": "null"},
+        {"name": "dim_device_app_combo",        "type": ["string", "null"], "default": "null"},
+        {"name": "ds",                          "type": [{"type": "string", "logicalType": "date"}, "null"],    "default": "null"},
+        {"name": "ts_min",                      "type": [{"type": "string", "logicalType": "timestamp-milis"}, "null"], "default": "null"},
+        {"name": "ts_max",                      "type": [{"type": "string", "logicalType": "timestamp-milis"}, "null"], "default": "null"},
+        {"name": "did_search",                  "type": ["int","null"],     "default": "null"},
+        {"name": "sent_message",                "type": ["int","null"],     "default": "null"},
+        {"name": "sent_booking_request",        "type": ["int","null"],     "default": "null"},
+        {"name": "next_id_session",             "type": ["string","null"],   "default": "null"},
+        {"name": "next_dim_session_number",     "type": ["int","null"],     "default": "null"},
+        {"name": "next_dim_user_agent",         "type": ["string", "null"],  "default": "null"},
+        {"name": "next_dim_device_app_combo",   "type": ["string", "null"],  "default": "null"},
+        {"name": "next_ds",                     "type": [{"type": "string", "logicalType": "date"}, "null"],    "default": "null"},
+        {"name": "next_ts_min",                 "type": [{"type": "string", "logicalType": "timestamp-milis"}, "null"],    "default": "null"},
+        {"name": "next_ts_max",                 "type": [{"type": "string", "logicalType": "timestamp-milis"}, "null"],    "default": "null"},
+        {"name": "next_did_search",             "type": ["int", "null"],    "default": "null"},
+        {"name": "next_sent_message",           "type": ["int", "null"],    "default": "null"},
+        {"name": "next_sent_booking_request",   "type": ["int", "null"],    "default": "null"}
+    ]
+}
